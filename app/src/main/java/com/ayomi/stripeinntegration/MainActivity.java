@@ -52,22 +52,17 @@ public class MainActivity extends AppCompatActivity {
 
         PaymentConfiguration.init(this, PUBLISH_KEY);
 
-        paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
-            onPaymentResult(paymentSheetResult);
-        });
+        paymentSheet = new PaymentSheet(this, this::onPaymentResult);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/customers", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/customers", response -> {
 
-                try {
-                    JSONObject object = new JSONObject(response);
-                    customerID = object.getString("id");
-                    getEphericalKey(customerID);
+            try {
+                JSONObject object = new JSONObject(response);
+                customerID = object.getString("id");
+                getEphericalKey(customerID);
 //                    Toast.makeText(MainActivity.this, customerID, Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -144,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject object = new JSONObject(response);
                     clientSecretKey = object.getString("client_secret");
-                    getClientSecret(customerID, ephericalkey);
+//                    getClientSecret(customerID, ephericalkey);
 //                    Toast.makeText(MainActivity.this, clientSecretKey, Toast.LENGTH_SHORT).show();
 
                 } catch (JSONException e) {
